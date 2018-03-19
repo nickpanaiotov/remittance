@@ -5,7 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
 
-import {MetaCoinService, Web3Service} from '../services/services';
+import {MetaCoinService, Web3Service, RemittanceService} from '../services/services';
 import {AliceComponent} from './alice/alice.component';
 import {CarolComponent} from './carol/carol.component';
 import {Routing} from './app.routing';
@@ -15,6 +15,7 @@ import { HomeComponent } from './home/home.component';
 const SERVICES = [
   MetaCoinService,
   Web3Service,
+  RemittanceService,
 ]
 
 @NgModule({

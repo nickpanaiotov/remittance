@@ -22,40 +22,15 @@
 
   <form #coinForm="ngForm">
     <div class="field">
-      <label class="label">Amount</label>
+      <label class="label">Password Carol</label>
       <p class="control">
         <input
-          [(ngModel)]="sendingAmount"
+          [(ngModel)]="passwordCarol"
+          name="passwordCarol"
           class="input"
           type="text"
-          placeholder="95"
-          name="sendingAmount"
-          required
-          #sendingAmountModel="ngModel">
-      </p>
-      <div *ngIf="sendingAmountModel.errors && (sendingAmountModel.dirty || sendingAmountModel.touched)"
-           class="help is-danger">
-        <p [hidden]="!sendingAmountModel.errors.required">
-          This field is required
-        </p>
-      </div>
-      <div *ngIf="!sendingAmountModel.errors && (sendingAmountModel.dirty || sendingAmountModel.touched)"
-           class="help is-danger">
-        <p [hidden]="canBeNumber(sendingAmount)">
-          Must be a number
-        </p>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">To Address</label>
-      <p class="control">
-        <input
-          [(ngModel)]="recipientAddress"
-          name="recipientAddress"
-          class="input"
-          type="text"
-          placeholder="0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"
-          name="recipientAddress"
+          placeholder="password"
+          name="passwordCarol"
           required
           #recipientAddressModel="ngModel"
         >
@@ -66,10 +41,26 @@
           This field is required
         </p>
       </div>
-      <div *ngIf="!recipientAddressModel.errors && (recipientAddressModel.dirty || recipientAddressModel.touched)"
+    </div>
+
+    <div class="field">
+      <label class="label">Password Bob</label>
+      <p class="control">
+        <input
+          [(ngModel)]="passwordBob"
+          name="passwordBob"
+          class="input"
+          type="text"
+          placeholder="password"
+          name="passwordBob"
+          required
+          #recipientAddressModel="ngModel"
+        >
+      </p>
+      <div *ngIf="recipientAddressModel.errors && (recipientAddressModel.dirty || recipientAddressModel.touched)"
            class="help is-danger">
-        <p [hidden]="canBeNumber(recipientAddress)">
-          Must be a number
+        <p [hidden]="!recipientAddressModel.errors.required">
+          This field is required
         </p>
       </div>
     </div>
@@ -78,7 +69,7 @@
       <p class="control">
         <button
           [disabled]="!coinForm.valid"
-          (click)="sendCoin()"
+          (click)="withdraw()"
           class="button is-primary">
           Send
         </button>

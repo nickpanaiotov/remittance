@@ -22,7 +22,7 @@ contract Remittance is Killable {
 
     mapping(bytes32 => Transation) private transactions;
 
-    function submitTransation(address to, uint duration, bytes32 passwordHash) public payable returns (bool) {
+    function submitTransaction(address to, uint duration, bytes32 passwordHash) public payable returns (bool) {
         require(msg.value > 0);
         require(limitDuration > duration);
 

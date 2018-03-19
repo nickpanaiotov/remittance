@@ -1,6 +1,8 @@
 import {Component, NgZone, OnInit} from '@angular/core';
 import {MetaCoinService, Web3Service} from '../../services/services';
 import {canBeNumber} from '../../util/validation';
+import {keccak256} from 'js-sha3';
+import {RemittanceService} from '../../services/remittance-service';
 
 @Component({
   selector: 'app-alice',
@@ -19,14 +21,14 @@ export class AliceComponent {
   recipientAddress: string;
   passwordCarol: string;
   passwordBob: string;
+  duration: number;
   status: string;
   canBeNumber = canBeNumber;
 
-  constructor(
-    private _ngZone: NgZone,
-    private web3Service: Web3Service,
-    private metaCoinService: MetaCoinService,
-  ) {
+  constructor(private _ngZone: NgZone,
+              private web3Service: Web3Service,
+              private metaCoinService: MetaCoinService,
+              private remittanceService: RemittanceService) {
     this.onReady();
   }
 
@@ -50,14 +52,18 @@ export class AliceComponent {
     this.metaCoinService.getBalance(this.account)
       .subscribe(value => {
         this.balance = value
-      }, e => {this.setStatus('Error getting balance; see log.')})
+      }, e => {
+        this.setStatus('Error getting balance; see log.')
+      })
   };
 
   refreshBalanceEth = () => {
     this.web3Service.getBalance(this.account)
       .subscribe(value => {
         this.balanceEth = value
-      }, e => {this.setStatus('Error getting balance; see log.')})
+      }, e => {
+        this.setStatus('Error getting balance; see log.')
+      })
   };
 
   setStatus = message => {
@@ -67,11 +73,24 @@ export class AliceComponent {
   sendCoin = () => {
     this.setStatus('Initiating transaction... (please wait)');
 
+
     this.metaCoinService.sendCoin(this.account, this.recipientAddress, this.sendingAmount)
-      .subscribe(() =>{
+      .subscribe(() => {
         this.setStatus('Transaction complete!');
         this.refreshBalance();
         this.refreshBalanceEth();
       }, e => this.setStatus('Error sending coin; see log.'))
   };
+
+  submitTransaction = () => {
+    this.setStatus('Initiating transaction... (please wait)');
+
+    let password = '0x' + keccak256(this.passwordCarol + this.passwordBob);
+    this.remittanceService.submitTransaction(this.account, this.recipientAddress, this.sendingAmount, this.duration, password)
+      .subscribe(() => {
+        this.setStatus('Transaction Submitted!');
+        this.refreshBalance();
+        this.refreshBalanceEth();
+      }, e => this.setStatus('Error sending coin; see log.'))
+  }
 }

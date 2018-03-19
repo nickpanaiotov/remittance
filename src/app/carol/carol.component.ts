@@ -1,6 +1,7 @@
 import {Component, NgZone, OnInit} from '@angular/core';
 import {MetaCoinService, Web3Service} from '../../services/services';
 import {canBeNumber} from '../../util/validation';
+import {RemittanceService} from '../../services/remittance-service';
 
 @Component({
   selector: 'app-carol',
@@ -20,10 +21,14 @@ export class CarolComponent {
   status: string;
   canBeNumber = canBeNumber;
 
+  passwordCarol: string;
+  passwordBob: string;
+
   constructor(
     private _ngZone: NgZone,
     private web3Service: Web3Service,
     private metaCoinService: MetaCoinService,
+    private remittanceService: RemittanceService
   ) {
     this.onReady();
   }
@@ -62,11 +67,11 @@ export class CarolComponent {
     this.status = message;
   };
 
-  sendCoin = () => {
+  withdraw = () => {
     this.setStatus('Initiating transaction... (please wait)');
 
-    this.metaCoinService.sendCoin(this.account, this.recipientAddress, this.sendingAmount)
-      .subscribe(() =>{
+    this.remittanceService.withdraw(this.passwordCarol, this.passwordBob, this.account)
+      .subscribe(() => {
         this.setStatus('Transaction complete!');
         this.refreshBalance();
         this.refreshBalanceEth();

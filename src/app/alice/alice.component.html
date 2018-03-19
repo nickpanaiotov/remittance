@@ -45,6 +45,33 @@
         </p>
       </div>
     </div>
+
+    <div class="field">
+      <label class="label">Duration</label>
+      <p class="control">
+        <input
+          [(ngModel)]="duration"
+          class="input"
+          type="text"
+          placeholder="10"
+          name="duration"
+          required
+          #sendingAmountModel="ngModel">
+      </p>
+      <div *ngIf="sendingAmountModel.errors && (sendingAmountModel.dirty || sendingAmountModel.touched)"
+           class="help is-danger">
+        <p [hidden]="!sendingAmountModel.errors.required">
+          This field is required
+        </p>
+      </div>
+      <div *ngIf="!sendingAmountModel.errors && (sendingAmountModel.dirty || sendingAmountModel.touched)"
+           class="help is-danger">
+        <p [hidden]="canBeNumber(duration)">
+          Must be a number
+        </p>
+      </div>
+    </div>
+
     <div class="field">
       <label class="label">To Address</label>
       <p class="control">
@@ -121,7 +148,7 @@
       <p class="control">
         <button
           [disabled]="!coinForm.valid"
-          (click)="sendCoin()"
+          (click)="submitTransaction()"
           class="button is-primary">
           Send
         </button>
