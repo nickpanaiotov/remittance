@@ -62,4 +62,9 @@ export class Web3Service {
       })
     })
   }
+
+  toWei(value): number {
+    return this.web3.toWei(value, 'ether');
+  }
+
 }

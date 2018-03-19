@@ -85,8 +85,9 @@ export class AliceComponent {
   submitTransaction = () => {
     this.setStatus('Initiating transaction... (please wait)');
 
-    let password = '0x' + keccak256(this.passwordCarol + this.passwordBob);
-    this.remittanceService.submitTransaction(this.account, this.recipientAddress, this.sendingAmount, this.duration, password)
+    const amountInEther = this.web3Service.toWei(this.sendingAmount);
+    const password = '0x' + keccak256(this.passwordCarol + this.passwordBob);
+    this.remittanceService.submitTransaction(this.account, this.recipientAddress, amountInEther, this.duration, password)
       .subscribe(() => {
         this.setStatus('Transaction Submitted!');
         this.refreshBalance();
