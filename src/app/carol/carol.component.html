@@ -2,10 +2,15 @@
   <div class="hero-body">
     <div class="container">
       <h1 class="title is-1">
-        Metacoin ~ Angular4 + Truffle Starter Dapp
+        Шано ексЧейндж!
+
+        Hi, Carol
       </h1>
       <h2 class="title">
         You have <span class="is-medium has-underline">{{balance}}</span> META
+      </h2>
+      <h2 class="title">
+        You have <span class="is-medium has-underline">{{balanceEth}}</span> ETH
       </h2>
     </div>
   </div>
@@ -30,15 +35,15 @@
       </p>
       <div *ngIf="sendingAmountModel.errors && (sendingAmountModel.dirty || sendingAmountModel.touched)"
            class="help is-danger">
-          <p [hidden]="!sendingAmountModel.errors.required">
-            This field is required
-          </p>
+        <p [hidden]="!sendingAmountModel.errors.required">
+          This field is required
+        </p>
       </div>
       <div *ngIf="!sendingAmountModel.errors && (sendingAmountModel.dirty || sendingAmountModel.touched)"
            class="help is-danger">
-          <p [hidden]="canBeNumber(sendingAmount)">
-            Must be a number
-          </p>
+        <p [hidden]="canBeNumber(sendingAmount)">
+          Must be a number
+        </p>
       </div>
     </div>
     <div class="field">
@@ -57,15 +62,15 @@
       </p>
       <div *ngIf="recipientAddressModel.errors && (recipientAddressModel.dirty || recipientAddressModel.touched)"
            class="help is-danger">
-          <p [hidden]="!recipientAddressModel.errors.required">
-            This field is required
-          </p>
+        <p [hidden]="!recipientAddressModel.errors.required">
+          This field is required
+        </p>
       </div>
       <div *ngIf="!recipientAddressModel.errors && (recipientAddressModel.dirty || recipientAddressModel.touched)"
            class="help is-danger">
-          <p [hidden]="canBeNumber(recipientAddress)">
-            Must be a number
-          </p>
+        <p [hidden]="canBeNumber(recipientAddress)">
+          Must be a number
+        </p>
       </div>
     </div>
 

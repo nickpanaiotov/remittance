@@ -13,7 +13,7 @@ export class MetaCoinService {
 
   constructor(
   	private web3Ser: Web3Service,
-  	) { 
+  	) {
   	// Bootstrap the MetaCoin abstraction for Use
   	this.MetaCoin.setProvider(web3Ser.web3.currentProvider);
   }

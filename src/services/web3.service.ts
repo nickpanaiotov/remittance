@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import { fromPromise } from 'rxjs/observable/fromPromise';
+import {Observable} from 'rxjs/Observable';
+import {fromPromise} from 'rxjs/observable/fromPromise';
 
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 
 const Web3 = require('web3');
 
@@ -12,10 +12,10 @@ declare var window: any;
 @Injectable()
 export class Web3Service {
 
-	public web3: any;
+  public web3: any;
 
-  constructor() { 
-  	this.checkAndInstantiateWeb3();
+  constructor() {
+    this.checkAndInstantiateWeb3();
   }
 
   checkAndInstantiateWeb3 = () => {
@@ -37,21 +37,29 @@ export class Web3Service {
     }
   };
 
-  getAccounts(): Observable<any>{
-  	return Observable.create(observer => {
-  	  this.web3.eth.getAccounts((err, accs) => {
-  	    if (err != null) {
-  	      observer.error('There was an error fetching your accounts.')
-  	    }
+  getAccounts(): Observable<any> {
+    return Observable.create(observer => {
+      this.web3.eth.getAccounts((err, accs) => {
+        if (err != null) {
+          observer.error('There was an error fetching your accounts.')
+        }
 
-  	    if (accs.length === 0) {
-  	      observer.error('Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.')
-  	    }
+        if (accs.length === 0) {
+          observer.error('Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.')
+        }
 
-  	    observer.next(accs)
-  	    observer.complete()
-  	  });
-  	})
+        observer.next(accs)
+        observer.complete()
+      });
+    })
   }
 
+  getBalance(account): Observable<number> {
+    return Observable.create(observer => {
+      this.web3.eth.getBalance(account, (err, value) => {
+        observer.next(this.web3.fromWei(value, 'ether'));
+        observer.complete()
+      })
+    })
+  }
 }
