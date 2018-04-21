@@ -89,11 +89,35 @@ contract("Remittance", function (accounts) {
         try {
             await contract.submitTransaction(carol, 2, password, {from: alice, value: wei});
             await contract.withdraw("pesho+", "gosho", {from: alice});
-        } catch(error) {
+        } catch (error) {
             let deadline = await contract.getDeadline("pesho+", "gosho", {from: alice});
 
             let blockNumber = web3.eth.blockNumber;
             assert.isBelow(blockNumber, deadline.toString(), "Deadline is met already!");
         }
+    });
+
+    it("event should be emitted when transaction is submit", async function () {
+        let wei = 10;
+        let password = "0x" + keccak256("pesho+gosho");
+        let expectedEvent = 'SubmitTransactionEvent';
+
+        let result = await contract.submitTransaction(carol, 2, password, {from: alice, value: wei});
+
+        assert.lengthOf(result.logs, 1, "There should be 1 event emitted from setRate!");
+        assert.strictEqual(result.logs[0].event, expectedEvent, `The event emitted was ${result.logs[0].event} instead of ${expectedEvent}`);
+    });
+
+    it("event should be emitted when transaction is finish", async function () {
+        let wei = 10;
+        let password = "0x" + keccak256("pesho+gosho");
+        let expectedEvent = 'CompleteTransactionEvent';
+
+        await contract.submitTransaction(carol, 2, password, {from: alice, value: wei});
+
+        let result = await contract.withdraw("pesho+","gosho",{from: carol});
+
+        assert.lengthOf(result.logs, 1, "There should be 1 event emitted from setRate!");
+        assert.strictEqual(result.logs[0].event, expectedEvent, `The event emitted was ${result.logs[0].event} instead of ${expectedEvent}`);
     });
 });
