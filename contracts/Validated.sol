@@ -9,4 +9,16 @@ contract Validated {
 
         _;
     }
+
+    modifier withValidPasswords(string cPassword, string bPassword) {
+        checkEmptyString(cPassword);
+        checkEmptyString(bPassword);
+
+        _;
+    }
+
+    function checkEmptyString(string checked) private pure{
+        bytes memory tempEmptyStringTest = bytes(checked);
+        require (tempEmptyStringTest.length != 0) ;
+    }
 }

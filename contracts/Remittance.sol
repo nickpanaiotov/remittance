@@ -36,7 +36,8 @@ contract Remittance is Killable, Validated {
         return true;
     }
 
-    function withdraw(string cPassword, string bPassword) public returns (bool) {
+    function withdraw(string cPassword, string bPassword)
+        withValidPasswords(cPassword, bPassword) public returns (bool) {
         bytes32 key = keccak256(cPassword, bPassword);
         Transaction memory transaction = transactions[key];
 
@@ -63,7 +64,8 @@ contract Remittance is Killable, Validated {
         return limitDuration;
     }
 
-    function getDeadline(string cPassword, string bPassword) public view returns (uint) {
+    function getDeadline(string cPassword, string bPassword)
+        withValidPasswords(cPassword, bPassword) public view returns (uint) {
         bytes32 key = keccak256(cPassword, bPassword);
         Transaction memory transaction = transactions[key];
 
