@@ -1,12 +1,17 @@
-pragma solidity ^0.4.19;
+pragma solidity 0.4.21;
 
 import "./Killable.sol";
+import "./Validated.sol";
 
-contract Remittance is Killable {
+contract Remittance is Killable, Validated {
 
     uint private limitDuration;
+    mapping(bytes32 => Transaction) private transactions;
 
-    struct Transation {
+    event SubmitTransactionEvent(bytes32 id, address to, uint amount, uint duration);
+    event CompleteTransactionEvent(bytes32 id, address to, uint amount);
+
+    struct Transaction {
         address from;
         address to;
         uint amount;
@@ -20,32 +25,34 @@ contract Remittance is Killable {
         limitDuration = _limitDuration;
     }
 
-    mapping(bytes32 => Transation) private transactions;
-
-    function submitTransation(address to, uint duration, bytes32 passwordHash) public payable returns (bool) {
-        require(msg.value > 0);
+    function submitTransaction(address to, uint duration, bytes32 passwordHash)
+        isValid(to, passwordHash) public payable returns (bool) {
         require(limitDuration > duration);
+        require(transactions[passwordHash].amount == 0);
 
-        transactions[passwordHash] = Transation({from: msg.sender, to: to, amount: msg.value, deadline: block.number + duration});
+        transactions[passwordHash] = Transaction({from: msg.sender, to: to, amount: msg.value, deadline: block.number + duration});
 
+        emit SubmitTransactionEvent(passwordHash, to, msg.value, duration);
         return true;
     }
 
     function withdraw(string cPassword, string bPassword) public returns (bool) {
         bytes32 key = keccak256(cPassword, bPassword);
-        Transation memory transation = transactions[key];
+        Transaction memory transaction = transactions[key];
 
-        if (msg.sender == transation.from && block.number > transation.deadline) {
-            transation.from.transfer(transation.amount);
+        if (msg.sender == transaction.from && block.number > transaction.deadline) {
+            transaction.from.transfer(transaction.amount);
             delete(transactions[key]);
 
+            emit CompleteTransactionEvent(key, transaction.from, transaction.amount);
             return true;
         }
 
-        if (msg.sender == transation.to && block.number <= transation.deadline) {
-            transation.to.transfer(transation.amount);
+        if (msg.sender == transaction.to && block.number <= transaction.deadline) {
+            transaction.to.transfer(transaction.amount);
             delete(transactions[key]);
 
+            emit CompleteTransactionEvent(key, transaction.to, transaction.amount);
             return true;
         }
 
@@ -58,8 +65,8 @@ contract Remittance is Killable {
 
     function getDeadline(string cPassword, string bPassword) public view returns (uint) {
         bytes32 key = keccak256(cPassword, bPassword);
-        Transation memory transation = transactions[key];
+        Transaction memory transaction = transactions[key];
 
-        return transation.deadline;
+        return transaction.deadline;
     }
 }
