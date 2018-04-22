@@ -115,9 +115,37 @@ contract("Remittance", function (accounts) {
 
         await contract.submitTransaction(carol, 2, password, {from: alice, value: wei});
 
-        let result = await contract.withdraw("pesho+","gosho",{from: carol});
+        let result = await contract.withdraw("pesho+", "gosho", {from: carol});
 
         assert.lengthOf(result.logs, 1, "There should be 1 event emitted from setRate!");
         assert.strictEqual(result.logs[0].event, expectedEvent, `The event emitted was ${result.logs[0].event} instead of ${expectedEvent}`);
+    });
+
+    it('receiver should not be able to withdraw if the passwords are not correct', async () => {
+        let wei = 10;
+        let password = "0x" + keccak256("pesho+gosho");
+
+        await contract.submitTransaction(carol, 2, password, {from: alice, value: wei});
+
+        try {
+            await contract.withdraw("pesho+", "something", {from: carol});
+            assert.fail('exception should have been thrown before this line');
+        } catch (error) {
+
+        }
+    });
+
+    it('submitter should not be able to withdraw after deadline with incorrect passwords', async () => {
+        let wei = 10;
+        let password = "0x" + keccak256("pesho+gosho");
+
+        await contract.submitTransaction(carol, 1, password, {from: alice, value: wei});
+        await contract.submitTransaction(carol, 1, "whatever-password", {from: alice, value: 1});
+
+        try {
+            await contract.withdraw("pesho+", "something", {from: alice});
+            assert.fail('exception should have been thrown before this line');
+        } catch (error) {
+        }
     });
 });
